@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -18,13 +19,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-//@EqualsAndHashCode
+@EqualsAndHashCode
 public class User {
 
 	@Id
@@ -58,11 +60,9 @@ public class User {
 	private List<Post> listOfPost;
 
 	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL)
-	private Set<User> followerSet = new HashSet<>();
-
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL)
 	private Set<User> followingSet = new HashSet<>();
+
+	
 
 }

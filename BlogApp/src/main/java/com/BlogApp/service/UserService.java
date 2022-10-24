@@ -15,10 +15,6 @@ public interface UserService {
 	
 	public List<User> getAllUser() throws UserException;
 	
-	public Set<User> getFollwers(Integer userid) throws UserException;
-	
-	public Set<User> getFollowing(Integer userid) throws UserException;
-	
 	public List<User> searchUserByName(String name) throws UserException;
 	
 	public User follow(Integer id, String sessionId) throws UserException, LoginException;

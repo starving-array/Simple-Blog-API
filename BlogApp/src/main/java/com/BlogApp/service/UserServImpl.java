@@ -46,40 +46,6 @@ public class UserServImpl implements UserService {
 		return users;
 	}
 
-	@Override
-	public Set<User> getFollwers(Integer userid) throws UserException {
-		Optional<User> optional = uDao.findById(userid);
-		if (optional.isEmpty()) {
-			throw new UserException("User not found with this id");
-		}
-		Set<User> follower = optional.get().getFollowerSet();
-		if (follower.size() == 0) {
-			throw new UserException("No followers found");
-		}
-		return follower;
-	}
-
-	@Override
-	public Set<User> getFollowing(Integer userid) throws UserException {
-		Optional<User> optional = uDao.findById(userid);
-		if (optional.isEmpty()) {
-			throw new UserException("User not found with this id");
-		}
-		Set<User> following = optional.get().getFollowingSet();
-		if (following.size() == 0) {
-			throw new UserException("No followings found");
-		}
-		return following;
-	}
-
-	@Override
-	public List<User> searchUserByName(String name) throws UserException {
-		List<User> users = uDao.findByName(name);
-		if (users.size() == 0) {
-			throw new UserException("No user found");
-		}
-		return users;
-	}
 
 	@Override
 	public User follow(Integer id, String sessionId) throws UserException, LoginException {
@@ -99,11 +65,14 @@ public class UserServImpl implements UserService {
 		}
 		// check if already exists
 		Set<User> following = activeUser.get().getFollowingSet();
+		Set<User> followers = usertofollow.get().getFollowerSet();
 		if (following.contains(usertofollow.get())) {
 			throw new UserException(" You are already following this user");
 		}
 		following.add(usertofollow.get());
-		// save might need
+		followers.add(activeUser.get());
+		udao.save(usertofollow.get());
+		udao.save(activeUser.get());
 		return usertofollow.get();
 	}
 
