@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.BlogApp.exceptions.LoginException;
 import com.BlogApp.exceptions.UserException;
 import com.BlogApp.module.CurrentSession;
+import com.BlogApp.module.Followers;
 import com.BlogApp.module.User;
+import com.BlogApp.repository.FollowersDao;
 import com.BlogApp.repository.SessionDao;
 import com.BlogApp.repository.UserDao;
 
@@ -23,6 +25,9 @@ public class UserServImpl implements UserService {
 	private SessionDao sessionDao;
 	@Autowired
 	private UserDao udao;
+
+	@Autowired
+	private FollowersDao followersDao;
 
 	@Override
 	public User createAccount(User user) throws UserException {
@@ -46,61 +51,73 @@ public class UserServImpl implements UserService {
 		return users;
 	}
 
+	@Override
+	public List<User> searchUserByName(String name) throws UserException {
+		List<User> users = uDao.findByName(name);
+		if (users.size() == 0) {
+			throw new UserException("No user found");
+		}
+		return users;
+	}
 
 	@Override
-	public User follow(Integer id, String sessionId) throws UserException, LoginException {
+	public Followers follow(Integer userId, String sessionId) throws UserException, LoginException {
 		// session id verify for active user
 		CurrentSession cur = sessionDao.findByUuid(sessionId);
 		if (cur == null) {
 			throw new LoginException("Please log in to first");
 		}
-		Optional<User> activeUser = udao.findById(cur.getUserId());
-		if (activeUser.isEmpty()) {
+		Optional<User> activeUserOptional = udao.findById(cur.getUserId());
+		if (activeUserOptional.isEmpty()) {
 			throw new LoginException("Please login with your account");
 		}
+		User activeUser = activeUserOptional.get();
+		// ============================================================================
 
-		Optional<User> usertofollow = udao.findById(id);
-		if (usertofollow.isEmpty()) {
+		Optional<User> usertofollowOptional = udao.findById(userId);
+		if (usertofollowOptional.isEmpty()) {
 			throw new LoginException("No user found");
 		}
 		// check if already exists
-		Set<User> following = activeUser.get().getFollowingSet();
-		Set<User> followers = usertofollow.get().getFollowerSet();
-		if (following.contains(usertofollow.get())) {
-			throw new UserException(" You are already following this user");
-		}
-		following.add(usertofollow.get());
-		followers.add(activeUser.get());
-		udao.save(usertofollow.get());
-		udao.save(activeUser.get());
-		return usertofollow.get();
+		User usertofollow = usertofollowOptional.get();
+		// ============================================================================
+
+		Followers newFollowers = new Followers();
+		newFollowers.setFollower(activeUser);
+		newFollowers.setFollowing(usertofollow);
+		activeUser.getFollowingList().add(newFollowers);
+		usertofollow.getFollowerList().add(newFollowers);
+
+		return followersDao.save(newFollowers);
 	}
 
 	@Override
-	public User unFollow(Integer id, String sessionId) throws UserException, LoginException {
+	public Followers unFollow(Integer userId, String sessionId) throws UserException, LoginException {
 		CurrentSession cur = sessionDao.findByUuid(sessionId);
 		if (cur == null) {
 			throw new LoginException("Please log in to first");
 		}
-		Optional<User> activeUser = udao.findById(cur.getUserId());
-		if (activeUser.isEmpty()) {
+		Optional<User> activeUserOptional = udao.findById(cur.getUserId());
+		if (activeUserOptional.isEmpty()) {
 			throw new LoginException("Please login with your account");
 		}
+		User activeUser = activeUserOptional.get();
+		// ============================================================================
 
-		Optional<User> usertofollow = udao.findById(id);
-		if (usertofollow.isEmpty()) {
+		Optional<User> usertofollowOptional = udao.findById(userId);
+		if (usertofollowOptional.isEmpty()) {
 			throw new LoginException("No user found");
 		}
 		// check if already exists
-		Set<User> following = activeUser.get().getFollowingSet();
-		if (!following.contains(usertofollow.get())) {
-			throw new UserException("You are not following this user");
+		User usertofollow = usertofollowOptional.get();
+		// check if already exists
+		// ============================================================================
+		Followers followers = followersDao.getByFollowerFollowing(activeUser.getUserId(), usertofollow.getUserId());
+		if(followers==null) {
+			throw new UserException("You are not following "+usertofollow.getName());
 		}
-		following.remove(usertofollow.get());
-		// save might need
-		udao.save(usertofollow.get());
-		udao.save(usertofollow.get());
-		return usertofollow.get();
+		followersDao.delete(followers);	
+		return followers;
 	}
 
 	@Override
@@ -121,7 +138,7 @@ public class UserServImpl implements UserService {
 		if (phoneCheck != null) {
 			throw new UserException("Phone number already registered with us");
 		}
-		
+
 		return udao.save(user);
 	}
 

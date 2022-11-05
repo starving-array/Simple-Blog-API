@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.BlogApp.exceptions.LoginException;
 import com.BlogApp.exceptions.UserException;
+import com.BlogApp.module.Followers;
 import com.BlogApp.module.User;
 import com.BlogApp.service.UserService;
 
@@ -40,18 +41,7 @@ public class UserController {
 		return new ResponseEntity<User>(newUser, HttpStatus.OK);
 	}
 	
-	@GetMapping("/followers/{userId}")
-	public ResponseEntity<Set<User>> getFollowesH(@PathVariable("userId") Integer userId) throws UserException{
-		Set<User> folloerSet = uService.getFollwers(userId);
-		return new ResponseEntity<Set<User>>(folloerSet, HttpStatus.OK);
-	}
-	
-	@GetMapping("/following/{userId}")
-	public ResponseEntity<Set<User>> getFollowingH(@PathVariable("userId") Integer userId) throws UserException{
-		Set<User> folloerSet = uService.getFollowing(userId);
-		return new ResponseEntity<Set<User>>(folloerSet, HttpStatus.OK);
-	}
-	
+
 	@GetMapping("/search/{name}")
 	public ResponseEntity<List<User>> searchUserByNameH(@PathVariable("name") String name) throws UserException{
 		List<User> list = uService.searchUserByName(name);
@@ -59,15 +49,15 @@ public class UserController {
 	}
 	
 	@PatchMapping("/follow/{userId}/{sessionId}")
-	public ResponseEntity<User> followUser(@Valid @PathVariable("userId") Integer userId, @PathVariable("sessionId") String sessionId) throws UserException, LoginException{
-		User user = uService.follow(userId, sessionId);
-		return new ResponseEntity<User>(user, HttpStatus.OK);
+	public ResponseEntity<Followers> followUser(@Valid @PathVariable("userId") Integer userId, @PathVariable("sessionId") String sessionId) throws UserException, LoginException{
+		Followers user = uService.follow(userId, sessionId);
+		return new ResponseEntity<Followers>(user, HttpStatus.OK);
 	}
 	
 	@PatchMapping("/unfollow/{userId}/{sessionId}")
-	public ResponseEntity<User> unFollowUser(@Valid @PathVariable("userId") Integer userId, @PathVariable("sessionId") String sessionId) throws UserException, LoginException{
-		User user = uService.unFollow(userId, sessionId);
-		return new ResponseEntity<User>(user, HttpStatus.OK);
+	public ResponseEntity<Followers> unFollowUser(@Valid @PathVariable("userId") Integer userId, @PathVariable("sessionId") String sessionId) throws UserException, LoginException{
+		Followers user = uService.unFollow(userId, sessionId);
+		return new ResponseEntity<Followers>(user, HttpStatus.OK);
 	}
 	
 	
