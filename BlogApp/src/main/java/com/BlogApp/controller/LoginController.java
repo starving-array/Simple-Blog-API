@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +26,7 @@ public class LoginController {
 
 	@Autowired
 	private LoginService userLogin;
-
+	@CrossOrigin
 	@PostMapping("/login")
 	public ResponseEntity<String> logInUser(@Valid @RequestBody LoginDTO dto) throws LoginException {
 
@@ -34,7 +35,7 @@ public class LoginController {
 		return new ResponseEntity<String>(result, HttpStatus.OK);
 
 	}
-
+	@CrossOrigin
 	@PostMapping("/logout")
 	public String logoutUser(@RequestParam(required = false) String key) throws LoginException {
 		return userLogin.logOutFromAccount(key);
@@ -46,7 +47,7 @@ public class LoginController {
 //		return userLogin.deleteUser(key, userId);
 //
 //	}
-
+	@CrossOrigin
 	@GetMapping("/get")
 	public User getAccountDetails(@RequestParam String key, Integer userId) throws LoginException, UserException {
 

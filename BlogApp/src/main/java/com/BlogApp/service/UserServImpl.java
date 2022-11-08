@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.BlogApp.exceptions.LoginException;
 import com.BlogApp.exceptions.UserException;
 import com.BlogApp.module.CurrentSession;
-import com.BlogApp.module.Followers;
+import com.BlogApp.module.Connection;
 import com.BlogApp.module.User;
 import com.BlogApp.repository.FollowersDao;
 import com.BlogApp.repository.SessionDao;
@@ -61,7 +61,7 @@ public class UserServImpl implements UserService {
 	}
 
 	@Override
-	public Followers follow(Integer userId, String sessionId) throws UserException, LoginException {
+	public Connection follow(Integer userId, String sessionId) throws UserException, LoginException {
 		// session id verify for active user
 		CurrentSession cur = sessionDao.findByUuid(sessionId);
 		if (cur == null) {
@@ -85,8 +85,11 @@ public class UserServImpl implements UserService {
 			throw new UserException("You can't follow yourself. That's silly");
 		}
 		// ============================================================================
-
-		Followers newFollowers = new Followers();
+		Connection followers = followersDao.getByFollowerFollowing(usertofollow, activeUser);
+		if(followers != null) {
+			throw new UserException("You are already following "+usertofollow.getName());
+		}
+		Connection newFollowers = new Connection();
 		newFollowers.setFollower(activeUser);
 		newFollowers.setFollowing(usertofollow);
 		activeUser.getFollowingList().add(newFollowers);
@@ -96,7 +99,7 @@ public class UserServImpl implements UserService {
 	}
 
 	@Override
-	public Followers unFollow(Integer userId, String sessionId) throws UserException, LoginException {
+	public Connection unFollow(Integer userId, String sessionId) throws UserException, LoginException {
 		CurrentSession cur = sessionDao.findByUuid(sessionId);
 		if (cur == null) {
 			throw new LoginException("Please log in to first");
@@ -119,7 +122,7 @@ public class UserServImpl implements UserService {
 			throw new UserException("You can't unfollow yourself. That's silly");
 		}
 		// ============================================================================Integer followerId, Integer followingId
-		Followers followers = followersDao.getByFollowerFollowing(activeUser.getUserId(), usertofollow.getUserId());
+		Connection followers = followersDao.getByFollowerFollowing(usertofollow, activeUser);
 		if(followers==null) {
 			throw new UserException("You are not following "+usertofollow.getName());
 		}

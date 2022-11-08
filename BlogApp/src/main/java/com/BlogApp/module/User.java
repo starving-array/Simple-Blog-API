@@ -60,10 +60,10 @@ public class User {
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
-	private List<Followers> followingList;
+	private List<Connection> followingList;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "following", cascade = CascadeType.ALL)
-	private List<Followers> followerList;
+	private List<Connection> followerList;
 
 }

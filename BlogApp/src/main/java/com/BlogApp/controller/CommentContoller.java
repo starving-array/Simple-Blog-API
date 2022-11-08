@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ public class CommentContoller {
 	@Autowired
 	private CommentsService cService;
 
+	@CrossOrigin
 	@GetMapping("/post/{postId}")
 	public ResponseEntity<List<Comments>> getAllCommentByPost(@PathVariable("postId") Integer postId)
 			throws PostException, CommentException {
@@ -34,12 +36,14 @@ public class CommentContoller {
 		return new ResponseEntity<List<Comments>>(comments, HttpStatus.OK);
 	}
 
+	@CrossOrigin
 	@GetMapping("/{commentId}")
 	public ResponseEntity<Comments> getCommentById(@PathVariable("commentId") Integer cId) throws CommentException {
 		Comments comments = cService.getCommentsByCommentID(cId);
 		return new ResponseEntity<Comments>(comments, HttpStatus.OK);
 	}
 
+	@CrossOrigin
 	@PostMapping("/{postid}/{session}")
 	public ResponseEntity<Comments> createNewCommentH(@PathVariable("postid") Integer postid,
 			@RequestBody Comments comments, @PathVariable("session") String sessionId)
@@ -48,6 +52,7 @@ public class CommentContoller {
 		return new ResponseEntity<Comments>(newcComments, HttpStatus.CREATED);
 	}
 
+	@CrossOrigin
 	@PutMapping("/{postid}/{session}")
 	public ResponseEntity<Comments> updateCommentH(@PathVariable("postid") Integer postid,
 			@RequestBody Comments comments, @PathVariable("session") String sessionId)
@@ -56,6 +61,7 @@ public class CommentContoller {
 		return new ResponseEntity<Comments>(newcComments, HttpStatus.OK);
 	}
 
+	@CrossOrigin
 	@DeleteMapping("/{postid}/{comid}/{session}")
 	public ResponseEntity<Comments> deleteCommentH(@PathVariable("postid") Integer postid,
 			@PathVariable("comid") Integer comments, @PathVariable("session") String sessionId)

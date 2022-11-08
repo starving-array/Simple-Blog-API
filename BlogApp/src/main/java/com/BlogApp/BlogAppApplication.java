@@ -27,8 +27,8 @@ public class BlogAppApplication {
 	}
 
 	private ApiInfo apiDetails() {
-		return new ApiInfo("Blog Create", "Sample api", "1.0", "@Archie",
-				new springfox.documentation.service.Contact("Mock Test", "#", "gowork.archis@gmail.com"), "API l",
+		return new ApiInfo("Simple Blog Application", "Sample api for Blog app", "1.0", "@Archie",
+				new springfox.documentation.service.Contact("Contact me!", "#", "gowork.archis@gmail.com"), "API l.0",
 				"https://github.com/starving-array", Collections.emptyList());
 	}
 }

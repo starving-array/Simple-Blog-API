@@ -5,7 +5,7 @@ import java.util.Set;
 
 import com.BlogApp.exceptions.LoginException;
 import com.BlogApp.exceptions.UserException;
-import com.BlogApp.module.Followers;
+import com.BlogApp.module.Connection;
 import com.BlogApp.module.User;
 
 public interface UserService {
@@ -18,9 +18,9 @@ public interface UserService {
 	
 	public List<User> searchUserByName(String name) throws UserException;
 	
-	public Followers follow(Integer id, String sessionId) throws UserException, LoginException;
+	public Connection follow(Integer id, String sessionId) throws UserException, LoginException;
 	
-	public Followers unFollow(Integer id, String sessionId) throws UserException, LoginException;
+	public Connection unFollow(Integer id, String sessionId) throws UserException, LoginException;
 	
 
 }
