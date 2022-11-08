@@ -37,22 +37,39 @@ public class PostController {
 		Post post = pservice.getPostById(postId);
 		return new ResponseEntity<Post>(post, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/{idSes}")
-	public ResponseEntity<Post> createPostH(@RequestBody Post post, @PathVariable("idSes") String sessionID) throws LoginException{
+	public ResponseEntity<Post> createPostH(@RequestBody Post post, @PathVariable("idSes") String sessionID)
+			throws LoginException {
 		Post postNewPost = pservice.createPost(post, sessionID);
 		return new ResponseEntity<Post>(postNewPost, HttpStatus.CREATED);
 	}
-	
+
 	@PutMapping("/{idSes}")
-	public ResponseEntity<Post> updatePostH(@RequestBody Post post, @PathVariable("idSes") String sessionID) throws LoginException, PostException{
+	public ResponseEntity<Post> updatePostH(@RequestBody Post post, @PathVariable("idSes") String sessionID)
+			throws LoginException, PostException {
 		Post postNewPost = pservice.updatePost(post, sessionID);
 		return new ResponseEntity<Post>(postNewPost, HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("{idpost}/{idSes}")
-	public ResponseEntity<Post> deletetePostH(@PathVariable("idpost") Integer postid, @PathVariable("idSes") String sessionID) throws LoginException, PostException{
+	public ResponseEntity<Post> deletetePostH(@PathVariable("idpost") Integer postid,
+			@PathVariable("idSes") String sessionID) throws LoginException, PostException {
 		Post postNewPost = pservice.deletepost(postid, sessionID);
 		return new ResponseEntity<Post>(postNewPost, HttpStatus.OK);
 	}
+
+	@GetMapping("/page:/{pageno}")
+	public ResponseEntity<List<Post>> getPostByPage(@PathVariable("pageno") Integer pageNo) throws PostException {
+		List<Post> list = pservice.getPagination(pageNo);
+		return new ResponseEntity<List<Post>>(list, HttpStatus.OK);
+	}
+	
+	@GetMapping("/pagetotal")
+	public ResponseEntity<Integer> getTotalPostSize() throws PostException{
+		Integer pageTotal = pservice.getTotalPage();
+		return new ResponseEntity<Integer>(pageTotal, HttpStatus.OK);
+	}
+	
+
 }

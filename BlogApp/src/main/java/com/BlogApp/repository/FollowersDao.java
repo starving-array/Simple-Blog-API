@@ -1,14 +1,19 @@
 package com.BlogApp.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 import com.BlogApp.module.Followers;
+import com.BlogApp.module.User;
 
-@Repository
+
 public interface FollowersDao extends JpaRepository<Followers, Integer> {
 
-	@Query("select c from Followers c where following=?1 and  follower=?2")
-	public Followers getByFollowerFollowing(Integer followingId, Integer followerId);
+	@Query("select c.follower from Followers c")
+	public List<User> getByFollower(Integer id);
+	
+	@Query("select c from Followers c ")
+	public List<User> getByFollowing(Integer id);
 }

@@ -28,7 +28,9 @@ public class Post {
 	private Integer postId;
 	private String postHeading;
 	private String postBody;
-
+    // timestamp create
+	// timestamp edit
+	
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "User_Id", referencedColumnName = "userId")

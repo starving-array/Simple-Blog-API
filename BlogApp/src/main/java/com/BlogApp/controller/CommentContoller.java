@@ -21,7 +21,7 @@ import com.BlogApp.module.Comments;
 import com.BlogApp.service.CommentsService;
 
 @RestController
-@RequestMapping("/mapping")
+@RequestMapping("/comments")
 public class CommentContoller {
 
 	@Autowired

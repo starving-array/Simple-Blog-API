@@ -1,5 +1,6 @@
 package com.BlogApp.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,7 +83,16 @@ public class PostServImpl implements PostService {
 		if (userData.getUserId() != postData.getUser().getUserId()) {
 			throw new PostException("this post doesnot belongs to this id. Please log in with properid to update");
 		}
+		if (post.getPostBody() != null) {
+			postData.setPostBody(post.getPostBody());
+		}
+		if (post.getPostHeading() != null) {
+			postData.setPostHeading(post.getPostHeading());
+		}
 		post.setUser(userData);
+		if (postData.getPostComments().size() != 0) {
+			post.getPostComments().addAll(postData.getPostComments());
+		}
 		return pdao.save(post);
 	}
 
@@ -112,8 +122,37 @@ public class PostServImpl implements PostService {
 
 	@Override
 	public List<Post> getPagination(Integer paegno) throws PostException {
-		// TODO Auto-generated method stub
-		return null;
+		// default post size per page is 10;
+		int postPerPage = 10;
+		int offsetSize = (paegno - 1) * postPerPage + 1;
+//		List<Post> list = pdao.getPostByPage(offsetSize, postPerPage); // limit not support by jpa
+		// need to implement through Pagable later
+		List<Post> list = pdao.findAll();
+		if (list.size() == 0 || list.size()< offsetSize) {
+			throw new PostException("No data found");
+		}
+		List<Post> result = new ArrayList<>();
+		
+		int limit = postPerPage + offsetSize; // 11
+		
+		if(list.size()<offsetSize+postPerPage) {
+			limit = list.size();
+		}else {
+			limit--;
+		}
+		for(int i = offsetSize-1; i<limit; i++) {
+			result.add(list.get(i));
+		}
+		// post perpage
+		
+		return result;
+	}
+
+//
+	@Override
+	public Integer getTotalPage() throws PostException {
+		List<Post> list = pdao.findAll();
+		return list.size();
 	}
 
 }

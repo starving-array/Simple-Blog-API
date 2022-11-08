@@ -63,11 +63,11 @@ public class CommentServImpl implements CommentsService {
 		if (cur == null) {
 			throw new LoginException("Please log in to comment");
 		}
-		Optional<User> user = udao.findById(cur.getUserId()); 
+		Optional<User> user = udao.findById(cur.getUserId());
 		if (user.isEmpty()) {
 			throw new LoginException("Please login with your account");
 		}
-		Optional<Post> postopt = pdao.findById(postId); 
+		Optional<Post> postopt = pdao.findById(postId);
 		if (postopt.isEmpty()) {
 			throw new PostException("Post doesn't exist");
 		}
@@ -80,8 +80,8 @@ public class CommentServImpl implements CommentsService {
 		postData.getPostComments().add(comments);
 		comments.setPostComment(postData);
 		postData.setUser(userData);
-		pdao.save(postData);
-		return comments;
+		return cdao.save(comments);
+
 	}
 
 	@Override
@@ -91,11 +91,11 @@ public class CommentServImpl implements CommentsService {
 		if (cur == null) {
 			throw new LoginException("Please log in to comment");
 		}
-		Optional<User> user = udao.findById(cur.getUserId()); 
+		Optional<User> user = udao.findById(cur.getUserId());
 		if (user.isEmpty()) {
 			throw new LoginException("Please login with your account");
 		}
-		Optional<Post> postopt = pdao.findById(postId); 
+		Optional<Post> postopt = pdao.findById(postId);
 		if (postopt.isEmpty()) {
 			throw new PostException("Post doesn't exist");
 		}
@@ -106,11 +106,11 @@ public class CommentServImpl implements CommentsService {
 			throw new PostException("this post doesnot belongs to this id. Please log in with properid to update");
 		}
 		Optional<Comments> comdt = cdao.findById(comments.getCommentId());
-		if(comdt.isEmpty()) {
+		if (comdt.isEmpty()) {
 			throw new CommentException("Comment not exists");
 		}
 		Comments comdata = comdt.get();
-		if(comdata.getPostComment().getPostId()!= postData.getPostId()) {
+		if (comdata.getPostComment().getPostId() != postData.getPostId()) {
 			throw new CommentException("This comment doesn't belongs to this post");
 		}
 		postData.getPostComments().add(comments);
@@ -127,11 +127,11 @@ public class CommentServImpl implements CommentsService {
 		if (cur == null) {
 			throw new LoginException("Please log in to comment");
 		}
-		Optional<User> user = udao.findById(cur.getUserId()); 
+		Optional<User> user = udao.findById(cur.getUserId());
 		if (user.isEmpty()) {
 			throw new LoginException("Please login with your account");
 		}
-		Optional<Post> postopt = pdao.findById(postId); 
+		Optional<Post> postopt = pdao.findById(postId);
 		if (postopt.isEmpty()) {
 			throw new PostException("Post doesn't exist");
 		}
@@ -142,17 +142,18 @@ public class CommentServImpl implements CommentsService {
 			throw new PostException("this post doesnot belongs to this id. Please log in with properid to update");
 		}
 		Optional<Comments> comdt = cdao.findById(commentID);
-		if(comdt.isEmpty()) {
+		if (comdt.isEmpty()) {
 			throw new CommentException("Comment not exists");
 		}
 		Comments comdata = comdt.get();
-		if(comdata.getPostComment().getPostId()!= postData.getPostId()) {
+		if (comdata.getPostComment().getPostId() != postData.getPostId()) {
 			throw new CommentException("This comment doesn't belongs to this post");
 		}
-		
-		postData.getPostComments().remove(comdata);
-		postData.setUser(userData);
-		pdao.save(postData);
+
+//		postData.getPostComments().remove(comdata);
+//		postData.setUser(userData);
+//		pdao.save(postData);
+		cdao.delete(comdata);
 		return comdata;
 	}
 

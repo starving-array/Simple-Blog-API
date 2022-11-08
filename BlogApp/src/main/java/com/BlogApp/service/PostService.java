@@ -19,4 +19,6 @@ public interface PostService {
 	public Post deletepost(Integer postid, String sessionId) throws PostException, LoginException;
 
 	public List<Post> getPagination(Integer paegno) throws PostException;
+//
+	public Integer getTotalPage() throws PostException;
 }

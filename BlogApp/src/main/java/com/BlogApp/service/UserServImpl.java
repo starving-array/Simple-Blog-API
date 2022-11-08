@@ -80,6 +80,10 @@ public class UserServImpl implements UserService {
 		}
 		// check if already exists
 		User usertofollow = usertofollowOptional.get();
+		
+		if (activeUser.getUserId()==usertofollow.getUserId()) {
+			throw new UserException("You can't follow yourself. That's silly");
+		}
 		// ============================================================================
 
 		Followers newFollowers = new Followers();
@@ -111,7 +115,10 @@ public class UserServImpl implements UserService {
 		// check if already exists
 		User usertofollow = usertofollowOptional.get();
 		// check if already exists
-		// ============================================================================
+		if (activeUser.getUserId()==usertofollow.getUserId()) {
+			throw new UserException("You can't unfollow yourself. That's silly");
+		}
+		// ============================================================================Integer followerId, Integer followingId
 		Followers followers = followersDao.getByFollowerFollowing(activeUser.getUserId(), usertofollow.getUserId());
 		if(followers==null) {
 			throw new UserException("You are not following "+usertofollow.getName());
@@ -130,10 +137,12 @@ public class UserServImpl implements UserService {
 		if (activeUser.isEmpty()) {
 			throw new LoginException("Please login with your account");
 		}
+		// if new email already registered it will throw error
 		User emailCheck = uDao.findByEmail(user.getEmail());
 		if (emailCheck != null) {
 			throw new UserException("Email already registered with us");
 		}
+		// if new phone already registered throw error
 		User phoneCheck = uDao.findByContact(user.getContact());
 		if (phoneCheck != null) {
 			throw new UserException("Phone number already registered with us");
