@@ -24,5 +24,5 @@ public class CurrentSession {
 	
 	private String uuid;
 	
-	private LocalDateTime localDateTime;
+	private LocalDateTime loginTime;
 }

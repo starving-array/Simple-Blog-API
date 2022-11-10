@@ -1,5 +1,7 @@
 package com.BlogApp.module;
 
+import java.time.LocalDate;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,6 +25,12 @@ public class Comments {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer commentId;
 	private String commentBody;
+	@JsonIgnore
+	private LocalDate dateCreated;
+	// timestamp edit
+	@JsonIgnore
+	private LocalDate dateModified;
+	
 	
 	@JsonIgnore
 	@ManyToOne

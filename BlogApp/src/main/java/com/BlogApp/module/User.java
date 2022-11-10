@@ -1,5 +1,6 @@
 package com.BlogApp.module;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -49,7 +50,13 @@ public class User {
 //	private LocalDate dateOfBirth;
 
     // timestamp create
+	@JsonIgnore
+	private LocalDate dateCreated;
 	// timestamp edit
+	@JsonIgnore
+	private LocalDate dateModified;
+	
+	
 	@Email(message = "Please enter a valid email")
 	@NotBlank(message = "Email filed can't be empty")
 	private String email;
